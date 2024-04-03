@@ -13,10 +13,6 @@ class FormAuthenticationPage {
         this.loginButton = page.getByRole('button').filter({hasText: 'Login'});
     }
 
-    /*async goto() {
-        await this.page.goto(`**${urls.formAuthentication}`);
-    }*/
-
     async fillUsername(username: string) {
         await this.usernameInput.fill(username);
     }
