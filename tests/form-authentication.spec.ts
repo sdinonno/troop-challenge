@@ -8,7 +8,7 @@ let formAuthenticationPage: FormAuthenticationPage;
 test.beforeEach(async ({ page }) => {
     await page.goto(`${urls.formAuthentication}`);
     formAuthenticationPage = new FormAuthenticationPage(page);
-    await expect(page).toHaveURL(`${urls.formAuthentication}`);
+    await expect.soft(page).toHaveURL(`${urls.formAuthentication}`);
 })
 
 test.describe('Form Authentication', () => {
@@ -48,6 +48,3 @@ test.describe('Form Authentication', () => {
         })
     }
 })
-
-
-

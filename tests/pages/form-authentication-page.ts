@@ -1,5 +1,4 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import urls from '../utils/urls';
 
 class FormAuthenticationPage {
     readonly page: Page;
@@ -8,6 +7,7 @@ class FormAuthenticationPage {
     readonly loginButton: Locator;
 
     constructor(page: Page) {
+        this.page = page;
         this.usernameInput = page.locator("#username");
         this.passwordInput = page.locator("#password");
         this.loginButton = page.getByRole('button').filter({hasText: 'Login'});
