@@ -70,6 +70,8 @@ test.describe('Dynamic Content Handling', () => {
         let firstParagraphs;
         await test.step(`Given I navigate to the url with the parameters "${params}"`, async () => {
             await dynamicContentPage.page.goto(`${urls.dynamicContent}${params}`);
+            firstImages = await dynamicContentPage.getImagesSource();
+            firstParagraphs = await dynamicContentPage.getParagraphs();
         })
         
         await test.step('When I reload the page', async () => {
