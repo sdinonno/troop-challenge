@@ -1,14 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
+require('dotenv').config();
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+//Taking variables from .env
+const envFile = '.env.'+(process.env.ENV || 'dev');
+dotenv.config({path: path.resolve(__dirname, envFile)});
+
+if(!process.env.BASE_URL) {
+  throw new Error('BASE_URL is not defined. Please, verify ${envFile} exists and has a value.');
+}
+
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -23,7 +26,10 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: 'https://the-internet.herokuapp.com',
+    baseURL: process.env.BASE_URL,
+    headless: true,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },

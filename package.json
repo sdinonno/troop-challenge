@@ -3,12 +3,19 @@
   "version": "1.0.0",
   "description": "Welcome to the TROOP QA Automation Challenge. This exercise is designed to assess your skills in automated testing using Playwright and your proficiency with Git for version control.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:dev": "cross-env ENV=dev npx playwright test",
+    "test:staging": "cross-env ENV=staging npx playwright test",
+    "test:prod": "cross-env ENV=prod npx playwright test"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.42.1",
     "@types/node": "^20.11.30"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
   }
 }
