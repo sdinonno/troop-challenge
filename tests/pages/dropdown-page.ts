@@ -9,8 +9,21 @@ class DropdownPage {
         this.dropdown = page.locator('#dropdown');
     }
 
-    async selectOption(label: string) {
-        await this.dropdown.selectOption(label);
+    async getDropdownOptions() {
+        const optionElements = await this.dropdown.locator('option').all();
+        const optionTexts = await Promise.all(optionElements.map(opt => opt.textContent()));    
+        // Remove null values (in case some options are empty)
+        return optionTexts.filter((text): text is string => text !== null);
+    }
+
+    async selectOptionByText(option: string) {
+        const optionElement = await this.dropdown.locator('option', { hasText: option });
+        const value = await optionElement.getAttribute('value');
+
+        if (!value) {
+            throw new Error(`Option with text "${option}" not found or has no value attribute`);
+        }
+        await this.dropdown.selectOption(value);
     }
 
     async selectOptionByIndex(index: number) {
@@ -18,7 +31,9 @@ class DropdownPage {
     }
 
     async getSelectedOption() {
-        return this.page.locator("option[selected=selected]").textContent();
+        const selected = await this.dropdown.locator('option[selected]').textContent();
+        console.log('SELECTED:' + selected)
+        return selected?.trim() || '';
     }
 }
 
