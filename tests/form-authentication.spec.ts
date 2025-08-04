@@ -5,25 +5,26 @@ import credentials from './data/credentials';
 
 let formAuthenticationPage: FormAuthenticationPage;
 
-test.beforeEach(async ({ page }) => {
-    await page.goto(`${urls.formAuthentication}`);
-    formAuthenticationPage = new FormAuthenticationPage(page);
-    await expect.soft(page).toHaveURL(`${urls.formAuthentication}`);
-})
-
 test.describe('Form Authentication', () => {
-    test('Validate authentication with valid credentials', async ({ page }) => {
-        await test.step('When I enter valid credentials', async () => {
-            await formAuthenticationPage.fillUsername(credentials.valid.username);
-            await formAuthenticationPage.fillPassword(credentials.valid.password);
-        })
+    test.beforeEach(async ({ page }) => {
+        await page.goto(`${urls.formAuthentication}`);
+        formAuthenticationPage = new FormAuthenticationPage(page);
+        await expect(page).toHaveURL(`${urls.formAuthentication}`);
+    })
 
-        await test.step('And I click Login button', async () => {
-            await formAuthenticationPage.clickLogin();
-        })
+    test('Validate authentication with valid credentials', async ({ page }) => {
+
+        await test.step('Given I can see the fields on the login page', async () => {
+            await expect(formAuthenticationPage.usernameInput).toBeVisible();
+            await expect(formAuthenticationPage.passwordInput).toBeVisible();
+        });
+
+        await test.step('When I perform login with valid credentials', async () => {
+            await formAuthenticationPage.login(credentials.valid.username, credentials.valid.password);
+        });
 
         await test.step('Then I am logged in', async () => {
-            await page.waitForURL(`${urls.secure}`);
+            await expect(page).toHaveURL(`${urls.secure}`);
             await expect(page.locator('#flash')).toContainText('You logged into a secure area!');
         })
     })
@@ -32,13 +33,14 @@ test.describe('Form Authentication', () => {
         const field = error.includes("username") ? "username" : "password";
 
         test(`Validate authentication with "${error}"`, async ({ page }) => {
+
+            await test.step('Given I can see the fields on the login page', async () => {
+                await expect(formAuthenticationPage.usernameInput).toBeVisible();
+                await expect(formAuthenticationPage.passwordInput).toBeVisible();
+            });
+            
             await test.step(`When I enter "${username}" as username and ${password} as password`, async () => {
-                await formAuthenticationPage.fillUsername(username);
-                await formAuthenticationPage.fillPassword(password);
-            })
-    
-            await test.step('And I click Login button', async () => {
-                await formAuthenticationPage.clickLogin();
+                await formAuthenticationPage.login(username, password);
             })
     
             await test.step('Then I am not logged in', async () => {

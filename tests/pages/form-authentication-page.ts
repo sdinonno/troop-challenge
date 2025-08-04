@@ -13,15 +13,14 @@ class FormAuthenticationPage {
         this.loginButton = page.getByRole('button').filter({hasText: 'Login'});
     }
 
-    async fillUsername(username: string) {
-        await this.usernameInput.fill(username);
-    }
+    async login(username?: string, password?: string) {
+        if (username !== undefined) {
+            await this.usernameInput.fill(username);
+        }
 
-    async fillPassword(password: string) {
-        await this.passwordInput.fill(password);
-    }
-
-    async clickLogin() {
+        if (password !== undefined) {
+            await this.passwordInput.fill(password);
+        }
         await this.loginButton.click();
     }
 }
