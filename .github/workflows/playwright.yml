@@ -22,27 +22,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install dependencies for Playwright on Ubuntu 22.04 (latest)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libdrm2 \
-            libdbus-1-3 \
-            libxkbcommon0
-
       - name: Install Playwright browsers
-        run: npx playwright install
+        run: npx playwright install --with-deps
 
       - name: Run Playwright tests (dev)
         run: npm run test:dev
 
-      - name: Upload test results (if failed)
-        if: failure()
+      - name: Upload Playwright HTML report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report
+
+      - name: Notify Slack with Playwright report
+        if: always()
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "✅ Playwright tests finalizados en *${{ github.repository }}*.\nVer el reporte adjunto en los artifacts del workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
